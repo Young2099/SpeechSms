@@ -21,7 +21,6 @@ class RequestPermissionHelper {
             //请求权限
             if (permissionNeedRequest.size == 0) {
                 isFlag = true
-                return isFlag
             } else {
                 var permissions = Array(permissionNeedRequest.size, { i -> permissionNeedRequest[i] })
                 permissions = permissionNeedRequest.toArray(permissions)

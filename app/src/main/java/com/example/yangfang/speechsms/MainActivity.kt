@@ -15,22 +15,25 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    /**
+     * sharedPreferences保存号码
+     */
     var sp by SharedPreferenceUtil("user", "")
-    private var granted: Boolean = false
+    var smsSp by SharedPreferenceUtil("sms", "")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        registerBroad()
+//        registerBroad()
         //权限申请
-        granted = checkPermission()
+        checkPermission()
         btn.setOnClickListener {
             startPhoneAndBroadCast()
         }
         btn_stop.setOnClickListener {
             //广播方法
 //            unregisterReceiver(SmsReceiver())
-            //服务方式
+            //停止服务
             stopService(Intent(MainActivity@ this, SmsService1::class.java))
 
         }
@@ -41,7 +44,7 @@ class MainActivity : AppCompatActivity() {
      * 注册广播
      */
     private fun registerBroad() {
-        var smsReceiver = SmsReceiver()
+        val smsReceiver = SmsReceiver()
         val intentFilter = IntentFilter()
         intentFilter.addAction("com.example.yangfang.speechsms.SmsReceiver")
         registerReceiver(smsReceiver, intentFilter)
@@ -51,7 +54,7 @@ class MainActivity : AppCompatActivity() {
      * 检查number发送服务或者广播
      */
     private fun startPhoneAndBroadCast() {
-        if (granted && phone_text.text.isNotEmpty()) {
+        if (checkPermission() && phone_text.text.isNotEmpty()) {
             //sharedPreference存储所要监听的电话号码
             sp = phone_text.text.toString()
 //            startBroadCast()
@@ -66,9 +69,8 @@ class MainActivity : AppCompatActivity() {
      * 启动服务，数据观察者监听短信消息
      */
     private fun startServices() {
+        smsSp = ""//重置存储短信的值
         val intent = Intent(this, SmsService1::class.java)
-        //传入监听的电话号码
-        intent.putExtra("phone", phone_text.text.toString())
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
         startService(intent)
     }

@@ -5,6 +5,7 @@ import android.database.ContentObserver
 import android.database.Cursor
 import android.os.Handler
 import android.util.Log
+import com.example.yangfang.kotlindemo.util.SharedPreferenceUtil
 import com.example.yangfang.speechsms.CommonHandler
 import com.example.yangfang.speechsms.util.TtsUtil
 
@@ -12,6 +13,11 @@ import com.example.yangfang.speechsms.util.TtsUtil
  * 数据库监听短信
  */
 class SmsContentObserver(mHandler: CommonHandler) : ContentObserver(mHandler) {
+    /**
+     * phone
+     */
+    val sp by SharedPreferenceUtil("user", "")
+    var spSms by SharedPreferenceUtil("sms", "")
 
     constructor(context: Context, mHandler: CommonHandler) : this(mHandler) {
         this.mContext = context
@@ -31,6 +37,8 @@ class SmsContentObserver(mHandler: CommonHandler) : ContentObserver(mHandler) {
      * 读取短信
      */
     private fun getSmsCode() {
+        Log.e("sms",sp)
+
         var cursor: Cursor? = null
         try {
             //读取特定短信，第1条
@@ -42,7 +50,16 @@ class SmsContentObserver(mHandler: CommonHandler) : ContentObserver(mHandler) {
                     smsBody = cursor.getString(cursor.getColumnIndex("body"))
                     smsNumber = cursor.getString(cursor.getColumnIndex("address"))
                     Log.e("SmsObserver", "number$smsNumber: $smsBody")
-                    TtsUtil.read(mContext, smsBody)
+//                    if (smsNumber == sp) {
+                        //TODO 监控指定的电话号码
+//                    }
+                    if (spSms.isEmpty()) {
+                        //第一次会读取到之前的电话号码的短信消息
+                        spSms = smsBody
+                        Log.e("sms","fuck you :$spSms")
+                    }else{
+                        TtsUtil.read(mContext, smsBody)
+                    }
                 }
             }
 
