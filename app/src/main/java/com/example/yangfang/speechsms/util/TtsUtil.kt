@@ -1,7 +1,6 @@
 package com.example.yangfang.speechsms.util
 
 import android.content.Context
-import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.util.Log
@@ -10,10 +9,10 @@ import java.util.*
 object TtsUtil {
     private var mTts: TextToSpeech? = null
     fun read(ctx: Context, content: String) {
-        if (Settings.Secure.getInt(ctx.contentResolver, "hands_free_mode",
-                        0) == 0) {
-            return
-        }
+//        if (Settings.Secure.getInt(ctx.contentResolver, "hands_free_mode",
+//                        0) == 0) {
+//            return
+//        }
         if (null != mTts) {
             mTts!!.stop()
             try {

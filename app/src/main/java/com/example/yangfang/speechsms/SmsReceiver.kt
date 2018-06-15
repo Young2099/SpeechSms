@@ -38,11 +38,12 @@ class SmsReceiver : BroadcastReceiver() {
                         Log.e("SmsReceiver", "内容1：$content ")
                         Log.e("SmsReceiver", "电话号码：$sender ")
                     }
-
+                    /**
+                     * 启动服务播放语音
+                     */
                     val intent = Intent(context, SmsService::class.java)
                     intent.putExtra("msg", content)
                     intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     context.startService(intent)
                 }
             }
