@@ -4,10 +4,12 @@ import android.database.ContentObserver
 import android.os.Handler
 import android.util.Log
 
-
+/**
+ * 数据库监听短信
+ */
 class SmsContentObserver(mHandler: CommonHandler) : ContentObserver(mHandler) {
 
-    constructor(observer: ObserverService, mHandler: CommonHandler) : this(mHandler) {
+    constructor(observer: SmsService, mHandler: CommonHandler) : this(mHandler) {
         this.mObserver = observer
         this.mHandler = mHandler
     }
@@ -15,12 +17,12 @@ class SmsContentObserver(mHandler: CommonHandler) : ContentObserver(mHandler) {
 
     override fun onChange(selfChange: Boolean) {
         super.onChange(selfChange)
-        Log.e("change","smsOnchange")
+        Log.e("change", "smsOnchange")
 //        getSmsCode()
     }
 
     private lateinit var mHandler: Handler
-    private lateinit var mObserver: ObserverService
+    private lateinit var mObserver: SmsService
 
 //
 //    private fun getSmsCode() {

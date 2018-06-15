@@ -3,7 +3,7 @@ package com.example.yangfang.kotlindemo.util
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import com.example.yangfang.speechsms.MyApplication
+import com.example.yangfang.speechsms.app.MyApplication
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 

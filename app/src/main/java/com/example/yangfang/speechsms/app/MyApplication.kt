@@ -1,4 +1,4 @@
-package com.example.yangfang.speechsms
+package com.example.yangfang.speechsms.app
 
 import android.app.Application
 

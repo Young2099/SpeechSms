@@ -29,7 +29,7 @@ class CommonHandler : Handler(){
                 val bundle = msg.data
                 val msg = bundle.getString("msg")
                 Log.e("HANDLER",msg)
-                val service = ObserverService()
+                val service = SmsService()
                 service.startServices(msg)
             }
 
