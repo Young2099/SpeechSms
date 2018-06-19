@@ -29,11 +29,11 @@ class SmsService1 : Service() {
         Toast.makeText(MyApplication.instance!!, "服务启动", 0).show()
         smsObserver = SmsContentObserver(this, CommonHandler())
         contentResolver.registerContentObserver(SMS_INBOX, true, smsObserver)
-        Log.e("OnCreate", "onCreate:$getPhone")
+        Log.e("OnCreate1", "onCreate:$getPhone")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.e("onStartCommand:", "onStartCommand")
+        Log.e("onStartCommand1:", "onStartCommand")
         contentResolver.notifyChange(SMS_INBOX, null)
         return START_STICKY
     }

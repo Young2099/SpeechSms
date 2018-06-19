@@ -7,6 +7,7 @@ import android.os.Build
 import android.support.annotation.RequiresApi
 import android.telephony.SmsMessage
 import android.util.Log
+import com.example.yangfang.kotlindemo.util.SharedPreferenceUtil
 
 class SmsReceiver : BroadcastReceiver() {
 
@@ -15,8 +16,10 @@ class SmsReceiver : BroadcastReceiver() {
         const val SMS_DELIVER_ACTION = "android.provider.Telephony.SMS_DELIVER"
     }
 
+    private var phone by SharedPreferenceUtil("user", "")
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onReceive(context: Context, intent: Intent) {
+        Log.e("OnReceiver", phone)
         val action = intent.action
         if (SMS_RECEIVED_ACTION == action || SMS_DELIVER_ACTION == action) {
             val bundle = intent.extras
@@ -33,18 +36,23 @@ class SmsReceiver : BroadcastReceiver() {
                     Log.e("smsReceiver", "条数：${messages.size}")
                     var content = String()
                     for (message in messages) {
-                        content += message!!.messageBody// 得到短信内容
-                        val sender = message.originatingAddress// 得到发信息的号码
-                        Log.e("SmsReceiver", "内容1：$content ")
-                        Log.e("SmsReceiver", "电话号码：$sender ")
+                        val sender = message!!.originatingAddress// 得到发信息的号码
+                        if (sender.equals(phone)) {
+                            content += message.messageBody// 得到短信内容
+
+                            Log.e("SmsReceiver", "内容1：$content ")
+                            Log.e("SmsReceiver", "电话号码：$sender ")
+                        }
                     }
                     /**
                      * 启动服务播放语音
                      */
-                    val intent = Intent(context, SmsService::class.java)
-                    intent.putExtra("msg", content)
-                    intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
-                    context.startService(intent)
+                    if (content.isNotEmpty()) {
+                        val intent = Intent(context, SmsService::class.java)
+                        intent.putExtra("msg", content)
+                        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                        context.startService(intent)
+                    }
                 }
             }
         }

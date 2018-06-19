@@ -37,8 +37,6 @@ class SmsContentObserver(mHandler: CommonHandler) : ContentObserver(mHandler) {
      * 读取短信
      */
     private fun getSmsCode() {
-        Log.e("sms",sp)
-
         var cursor: Cursor? = null
         try {
             //读取特定短信，第1条
@@ -56,7 +54,6 @@ class SmsContentObserver(mHandler: CommonHandler) : ContentObserver(mHandler) {
                     if (spSms.isEmpty()) {
                         //第一次会读取到之前的电话号码的短信消息
                         spSms = smsBody
-                        Log.e("sms","fuck you :$spSms")
                     }else{
                         TtsUtil.read(mContext, smsBody)
                     }

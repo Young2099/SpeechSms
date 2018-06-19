@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.example.yangfang.kotlindemo.util.SharedPreferenceUtil
+import com.example.yangfang.speechsms.R.id.phone_text
 import com.example.yangfang.speechsms.contentobserver.SmsService1
 import com.example.yangfang.speechsms.util.RequestPermissionHelper
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,47 +21,44 @@ class MainActivity : AppCompatActivity() {
      */
     var sp by SharedPreferenceUtil("user", "")
     var smsSp by SharedPreferenceUtil("sms", "")
+    private var smsReceiver: SmsReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        registerBroad()
         //权限申请
         checkPermission()
         btn.setOnClickListener {
             startPhoneAndBroadCast()
         }
         btn_stop.setOnClickListener {
-            //广播方法
-//            unregisterReceiver(SmsReceiver())
+            //停止注册广播
+            if (smsReceiver != null) {
+                unregisterReceiver(smsReceiver!!)
+                Toast.makeText(MainActivity@ this, "取消监听短信", Toast.LENGTH_LONG).show()
+                smsReceiver = null
+            }
             //停止服务
-            stopService(Intent(MainActivity@ this, SmsService1::class.java))
+//            stopService(Intent(MainActivity@ this, SmsService1::class.java))
 
         }
 
     }
 
     /**
-     * 注册广播
-     */
-    private fun registerBroad() {
-        val smsReceiver = SmsReceiver()
-        val intentFilter = IntentFilter()
-        intentFilter.addAction("com.example.yangfang.speechsms.SmsReceiver")
-        registerReceiver(smsReceiver, intentFilter)
-    }
-
-    /**
-     * 检查number发送服务或者广播
+     * 检查phone发送服务或者广播
      */
     private fun startPhoneAndBroadCast() {
         if (checkPermission() && phone_text.text.isNotEmpty()) {
+            //动态注册广播
+            registerBroad()
             //sharedPreference存储所要监听的电话号码
             sp = phone_text.text.toString()
-//            startBroadCast()
-            startServices()
+            sendBroadCast()
+//            startServices()
+            Toast.makeText(MainActivity@ this, "启动短信监听", 1).show()
         } else {
-            Toast.makeText(MainActivity@ this, "填写电话号码", 1).show()
+            Toast.makeText(MainActivity@ this, "填写需要监听的电话号码", 1).show()
 
         }
     }
@@ -76,9 +74,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * 广播直接监听短信数据，再启动服务播放语音
+     * 动态注册广播
      */
-    private fun startBroadCast() {
+    private fun registerBroad() {
+        if (smsReceiver == null) {
+            smsReceiver = SmsReceiver()
+            val intentFilter = IntentFilter()
+            intentFilter.addAction("android.provider.Telephony.SMS_RECEIVED")
+            intentFilter.addAction("android.provider.Telephony.SMS_DELIVER")
+            intentFilter.addAction("com.example.yangfang.speechsms.SmsReceiver")
+            intentFilter.addCategory("android.intent.category.DEFAULT")
+            registerReceiver(smsReceiver!!, intentFilter)
+            Toast.makeText(this, "短信监听开启", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(this, "短信监听已经开启", Toast.LENGTH_LONG).show()
+        }
+
+    }
+
+
+    /**
+     * 发送广播直接监听短信数据，再启动服务播放语音
+     */
+    private fun sendBroadCast() {
         val intent = Intent()
         intent.action = "com.example.yangfang.speechsms.SmsReceiver"
         intent.putExtra("phone", phone_text.text.toString())
@@ -105,8 +123,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-//        unregisterReceiver(SmsReceiver())
+        Log.e("MainActivity", "onDestroy()")
+        if (smsReceiver != null) {
+            unregisterReceiver(smsReceiver!!)
+            smsReceiver = null
+        }
     }
-
 
 }
