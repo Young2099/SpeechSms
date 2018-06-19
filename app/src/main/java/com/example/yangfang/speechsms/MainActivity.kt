@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.example.yangfang.kotlindemo.util.SharedPreferenceUtil
-import com.example.yangfang.speechsms.R.id.phone_text
 import com.example.yangfang.speechsms.contentobserver.SmsService1
 import com.example.yangfang.speechsms.util.RequestPermissionHelper
 import kotlinx.android.synthetic.main.activity_main.*
@@ -17,10 +16,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     /**
-     * sharedPreferences保存号码
+     * sharedPreferences保存电话号码
      */
     var sp by SharedPreferenceUtil("user", "")
-    var smsSp by SharedPreferenceUtil("sms", "")
     private var smsReceiver: SmsReceiver? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +65,6 @@ class MainActivity : AppCompatActivity() {
      * 启动服务，数据观察者监听短信消息
      */
     private fun startServices() {
-        smsSp = ""//重置存储短信的值
         val intent = Intent(this, SmsService1::class.java)
         intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
         startService(intent)

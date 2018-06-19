@@ -22,7 +22,7 @@ class SmsService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Toast.makeText(MyApplication.instance!!, "服务语音", 0).show()
+        Toast.makeText(MyApplication.instance!!, "启动短信语音", 0).show()
         Log.e("OnCreate", "onCreate:$getPhone")
     }
 
