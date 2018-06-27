@@ -21,19 +21,20 @@ class SmsService : Service() {
     override fun onCreate() {
         super.onCreate()
         Toast.makeText(MyApplication.instance!!, "启动短信语音", 0).show()
-        Log.e("OnCreate", "onCreate:$getPhone")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val msg = intent!!.getStringExtra("msg")
-        Log.e("onStartCommand:", "onStartCommand")
         Log.e("内容:", msg)
-        Toast.makeText(MyApplication.instance, intent.getStringExtra("msg"), 0).show()
+        Toast.makeText(MyApplication.instance, intent.getStringExtra("msg"), Toast.LENGTH_LONG).show()
+        /**
+         * 讯飞语音播报
+         */
         TtsWarpper.with(MyApplication.instance)
                 .init()
                 .create()
                 .set(msg)
-                .start()
+                .speech()
         return START_STICKY
     }
 

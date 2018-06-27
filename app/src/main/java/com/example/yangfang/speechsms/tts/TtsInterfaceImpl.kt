@@ -112,7 +112,7 @@ class TtsInterfaceImpl(val source: TtsSource) : TtsInterface, SynthesizerListene
     override fun onSpeakResumed() {
     }
 
-    override fun start() {
+    override fun speech() {
         if (speechText.isNotEmpty()) {
             setParam()
             val code = mTts.startSpeaking(speechText, this)

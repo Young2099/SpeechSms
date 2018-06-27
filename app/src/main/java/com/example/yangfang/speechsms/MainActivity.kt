@@ -29,14 +29,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // 初始化合成对象
         //权限申请
         grantedPermission()
         btn.setOnClickListener(this)
         btn_stop.setOnClickListener(this)
         play.visibility = View.GONE
-
 
     }
 
@@ -44,8 +41,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         AndPermission.with(this)
                 .runtime()
                 .permission(Permission.READ_SMS, Permission.RECORD_AUDIO, Permission.READ_SMS)
-                .onGranted { _ -> toast(this, "短信权限开启") }
-                .onDenied { _ -> toast(this, "短信权限禁止") }
+                .onGranted { _ -> toast(this, "读取短信权限开启") }
+                .onDenied { _ -> toast(this, "读取短信权限禁止") }
                 .start()
 
     }
@@ -61,6 +58,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     smsReceiver = null
                 }
             }
+
             R.id.btn -> {
                 startPhoneAndBroadCast()
             }
@@ -72,11 +70,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun startPhoneAndBroadCast() {
         if (phone_text.text.isNotEmpty()) {
-            //动态注册广播
             registerBroad()
             sp = phone_text.text.toString()
             sendBroadCast()
-//            startServices()
             toast(MainActivity@ this, "启动短信监听")
         } else {
             toast(MainActivity@ this, "填写需要监听的电话号码")
@@ -123,13 +119,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         sendBroadcast(intent)
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        Log.e("tag", "resume")
-
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         Log.e("MainActivity", "onDestroy()")
@@ -142,7 +131,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 .destroy()
 
     }
-
 
 }
 
