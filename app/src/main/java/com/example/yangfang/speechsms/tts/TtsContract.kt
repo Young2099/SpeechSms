@@ -1,6 +1,6 @@
 package com.example.yangfang.speechsms.tts
 
-class TtsXunfei(val source: TtsSource) {
+class TtsContract(val source: TtsSource) {
 
     companion object {
         private var FACTORY: TtsActionFactory = TtsFactoryImpl()
