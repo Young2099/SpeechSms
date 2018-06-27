@@ -18,6 +18,10 @@ android {
                 cppFlags ""
             }
         }
+        ndk {
+            // 加了其他的文件夹（比如 armeabi-v7a，x86等）可能会出问题
+            abiFilters "armeabi","armeabi-v7a","x86"
+        }
     }
     buildTypes {
         release {
@@ -30,14 +34,25 @@ android {
             path "CMakeLists.txt"
         }
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.yanzhenjie:permission:2.0.0-rc11'
+    implementation files('libs/Msc.jar')
+    implementation files('libs/Sunflower.jar')
 }

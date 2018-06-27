@@ -1,4 +1,4 @@
-package com.example.yangfang.speechsms
+package com.example.yangfang.speechsms.broadcastmethod
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -26,6 +26,7 @@ class SmsReceiver : BroadcastReceiver() {
             val format = intent.getStringExtra("format")
             if (bundle != null) {
                 //读取短信，根据大小会把短信内容分成一段一段
+                //puds即是一条短信为140个字符的英文长度
                 val pdus = bundle.get("pdus") as Array<*>
                 if (pdus.isNotEmpty()) {
                     val messages = arrayOfNulls<SmsMessage>(pdus.size)
@@ -37,22 +38,22 @@ class SmsReceiver : BroadcastReceiver() {
                     var content = String()
                     for (message in messages) {
                         val sender = message!!.originatingAddress// 得到发信息的号码
-                        if (sender.equals(phone)) {
-                            content += message.messageBody// 得到短信内容
+//                        if (sender.equals(phone)) {
+                        content += message.messageBody// 得到短信内容
 
-                            Log.e("SmsReceiver", "内容1：$content ")
-                            Log.e("SmsReceiver", "电话号码：$sender ")
-                        }
+                        Log.e("SmsReceiver", "内容1：$content ")
+                        Log.e("SmsReceiver", "电话号码：$sender ")
+//                        }
                     }
                     /**
                      * 启动服务播放语音
                      */
-                    if (content.isNotEmpty()) {
-                        val intent = Intent(context, SmsService::class.java)
-                        intent.putExtra("msg", content)
-                        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
-                        context.startService(intent)
-                    }
+//                    if (content.isNotEmpty()) {
+                    val intent = Intent(context, SmsService::class.java)
+                    intent.putExtra("msg", content)
+                    intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
+                    context.startService(intent)
+//                    }
                 }
             }
         }

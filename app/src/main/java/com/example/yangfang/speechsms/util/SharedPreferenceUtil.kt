@@ -48,10 +48,10 @@ class SharedPreferenceUtil<T>(val name: String, private val default: T) : ReadWr
 
             }
 
-    private val prefs: SharedPreferences by lazy { MyApplication.instance().getSharedPreferences("sp", Context.MODE_PRIVATE) }
+    private val prefs: SharedPreferences by lazy { MyApplication.instance.getSharedPreferences("sp", Context.MODE_PRIVATE) }
 
     companion object {
-        //双重锁单列模式
+        //双重锁单列模
 //        val instance by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
 //            SharedPreferenceUtil()
 //

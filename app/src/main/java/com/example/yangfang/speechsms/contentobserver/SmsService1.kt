@@ -7,8 +7,8 @@ import android.os.IBinder
 import android.util.Log
 import android.widget.Toast
 import com.example.yangfang.kotlindemo.util.SharedPreferenceUtil
-import com.example.yangfang.speechsms.CommonHandler
 import com.example.yangfang.speechsms.app.MyApplication
+import com.example.yangfang.speechsms.util.CommonHandler
 
 class SmsService1 : Service() {
 

@@ -25,6 +25,12 @@
         tools:ignore="MissingConstraints" />
 
     <Button
+        android:id="@+id/play"
+        android:text="播放语音"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
         android:id="@+id/btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,5 +42,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="停止监听" />
+
 
 </LinearLayout>

@@ -6,7 +6,7 @@ import android.database.Cursor
 import android.os.Handler
 import android.util.Log
 import com.example.yangfang.kotlindemo.util.SharedPreferenceUtil
-import com.example.yangfang.speechsms.CommonHandler
+import com.example.yangfang.speechsms.util.CommonHandler
 import com.example.yangfang.speechsms.util.TtsUtil
 
 /**

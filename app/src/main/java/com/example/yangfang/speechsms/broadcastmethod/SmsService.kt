@@ -1,15 +1,14 @@
-package com.example.yangfang.speechsms
+package com.example.yangfang.speechsms.broadcastmethod
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.widget.Toast
 import com.example.yangfang.kotlindemo.util.SharedPreferenceUtil
 import com.example.yangfang.speechsms.app.MyApplication
+import com.example.yangfang.speechsms.tts.TtsWarpper
 import com.example.yangfang.speechsms.util.TtsUtil
-import java.util.*
 
 class SmsService : Service() {
 
@@ -17,7 +16,6 @@ class SmsService : Service() {
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
-
 
 
     override fun onCreate() {
@@ -31,7 +29,11 @@ class SmsService : Service() {
         Log.e("onStartCommand:", "onStartCommand")
         Log.e("内容:", msg)
         Toast.makeText(MyApplication.instance, intent.getStringExtra("msg"), 0).show()
-        TtsUtil.read(MyApplication.instance(),msg)
+        TtsWarpper.with(MyApplication.instance)
+                .init()
+                .create()
+                .set(msg)
+                .start()
         return START_STICKY
     }
 

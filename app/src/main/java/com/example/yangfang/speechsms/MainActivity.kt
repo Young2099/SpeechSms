@@ -1,19 +1,23 @@
 package com.example.yangfang.speechsms
 
-import android.Manifest
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.example.yangfang.kotlindemo.util.SharedPreferenceUtil
+import com.example.yangfang.speechsms.broadcastmethod.SmsReceiver
 import com.example.yangfang.speechsms.contentobserver.SmsService1
-import com.example.yangfang.speechsms.util.RequestPermissionHelper
+import com.example.yangfang.speechsms.tts.TtsWarpper
+import com.example.yangfang.speechsms.util.toast
+import com.yanzhenjie.permission.AndPermission
+import com.yanzhenjie.permission.Permission
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+
+class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     /**
      * sharedPreferences保存电话号码
@@ -21,42 +25,61 @@ class MainActivity : AppCompatActivity() {
     var sp by SharedPreferenceUtil("user", "")
     private var smsReceiver: SmsReceiver? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // 初始化合成对象
         //权限申请
-        checkPermission()
-        btn.setOnClickListener {
-            startPhoneAndBroadCast()
-        }
-        btn_stop.setOnClickListener {
-            //停止注册广播
-            if (smsReceiver != null) {
-                unregisterReceiver(smsReceiver!!)
-                Toast.makeText(MainActivity@ this, "取消监听短信", Toast.LENGTH_LONG).show()
-                smsReceiver = null
+        grantedPermission()
+        btn.setOnClickListener(this)
+        btn_stop.setOnClickListener(this)
+        play.visibility = View.GONE
+
+
+    }
+
+    private fun grantedPermission() {
+        AndPermission.with(this)
+                .runtime()
+                .permission(Permission.READ_SMS, Permission.RECORD_AUDIO, Permission.READ_SMS)
+                .onGranted { _ -> toast(this, "短信权限开启") }
+                .onDenied { _ -> toast(this, "短信权限禁止") }
+                .start()
+
+    }
+
+
+    override fun onClick(it: View) {
+        when (it.id) {
+            R.id.btn_stop -> {
+                //停止注册广播
+                if (smsReceiver != null) {
+                    unregisterReceiver(smsReceiver!!)
+                    Toast.makeText(MainActivity@ this, "取消监听短信", Toast.LENGTH_LONG).show()
+                    smsReceiver = null
+                }
             }
-            //停止服务
-//            stopService(Intent(MainActivity@ this, SmsService1::class.java))
-
+            R.id.btn -> {
+                startPhoneAndBroadCast()
+            }
         }
-
     }
 
     /**
      * 检查phone发送服务或者广播
      */
     private fun startPhoneAndBroadCast() {
-        if (checkPermission() && phone_text.text.isNotEmpty()) {
+        if (phone_text.text.isNotEmpty()) {
             //动态注册广播
             registerBroad()
-            //sharedPreference存储所要监听的电话号码
             sp = phone_text.text.toString()
             sendBroadCast()
 //            startServices()
-            Toast.makeText(MainActivity@ this, "启动短信监听", 1).show()
+            toast(MainActivity@ this, "启动短信监听")
         } else {
-            Toast.makeText(MainActivity@ this, "填写需要监听的电话号码", 1).show()
+            toast(MainActivity@ this, "填写需要监听的电话号码")
 
         }
     }
@@ -101,21 +124,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun checkPermission(): Boolean {
-        return RequestPermissionHelper.requestAndCheck(this, arrayOf(Manifest.permission.READ_SMS))
-
-    }
-
     override fun onResume() {
         super.onResume()
         Log.e("tag", "resume")
 
-    }
-
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (permissions[0] == Manifest.permission.READ_SMS && grantResults[0] == PackageManager.PERMISSION_DENIED)
-            finish()
     }
 
     override fun onDestroy() {
@@ -125,6 +137,13 @@ class MainActivity : AppCompatActivity() {
             unregisterReceiver(smsReceiver!!)
             smsReceiver = null
         }
+        TtsWarpper.with(this)
+                .init()
+                .destroy()
+
     }
 
+
 }
+
+
